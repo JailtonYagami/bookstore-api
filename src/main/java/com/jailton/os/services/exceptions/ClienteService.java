@@ -1,12 +1,10 @@
-package com.jailton.os.services;
+package com.jailton.os.services.exceptions;
 
+import com.jailton.os.domain.Cliente;
 import com.jailton.os.domain.Pessoa;
-import com.jailton.os.domain.Tecnico;
-import com.jailton.os.dtos.TecnicoDTO;
+import com.jailton.os.dtos.ClienteDTO;
+import com.jailton.os.repositories.ClienteRepository;
 import com.jailton.os.repositories.PessoaRepository;
-import com.jailton.os.repositories.TecnicoRepository;
-import com.jailton.os.services.exceptions.DataIntegratyViolationException;
-import com.jailton.os.services.exceptions.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,37 +12,37 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class TecnicoService {
+public class ClienteService {
 
     @Autowired
-    private TecnicoRepository repository;
+    private ClienteRepository repository;
 
     @Autowired
     private PessoaRepository pessoaRepository;
 
-    public Tecnico findByid(Long id) {
-        Optional<Tecnico> obj = repository.findById(id);
+    public Cliente findByid(Long id) {
+        Optional<Cliente> obj = repository.findById(id);
         return obj.orElseThrow(() -> new ObjectNotFoundException(
-                "Objeto não encontrado! Id: " + id + ", Tipo: " + Tecnico.class.getName()));
+                "Objeto não encontrado! Id: " + id + ", Tipo: " + Cliente.class.getName()));
     }
 
-    public List<Tecnico> findAll() {
+    public List<Cliente> findAll() {
         return repository.findAll();
     }
 
-    public Tecnico create(TecnicoDTO objDTO) {
+    public Cliente create(ClienteDTO objDTO) {
 
         if (findByCPF(objDTO) != null) {
             throw new DataIntegratyViolationException("CPF já cadastrado na base de dados!");
         }
 
-        Tecnico newObj = new Tecnico(null, objDTO.getNome(), objDTO.getCpf(), objDTO.getTelefone());
+        Cliente newObj = new Cliente(null, objDTO.getNome(), objDTO.getCpf(), objDTO.getTelefone());
         return repository.save(newObj);
     }
 
-    public Tecnico update(Long id, TecnicoDTO objDTO) {
+    public Cliente update(Long id, ClienteDTO objDTO) {
 
-        Tecnico oldObj = findByid(id);
+        Cliente oldObj = findByid(id);
 
         if (findByCPF(objDTO) != null && findByCPF(objDTO).getId() != id) {
             throw new DataIntegratyViolationException("CPF já cadastrado na base de dados!");
@@ -58,15 +56,15 @@ public class TecnicoService {
     }
 
     public void delete(Long id) {
-        Tecnico obj = findByid(id);
+        Cliente obj = findByid(id);
         if (obj.getList().size() > 0) {
-            throw new DataIntegratyViolationException("Técnico possui ordens de serviço, " +
+            throw new DataIntegratyViolationException("Pessoa possui ordens de serviço, " +
                     "não pode ser deletado!");
         }
         repository.deleteById(id);
     }
 
-    private Pessoa findByCPF(TecnicoDTO objDTO) {
+    private Pessoa findByCPF(ClienteDTO objDTO) {
         Pessoa obj = pessoaRepository.findByCPF(objDTO.getCpf());
         if (obj != null) {
             return obj;

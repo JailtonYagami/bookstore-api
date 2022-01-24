@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
 public class ResourceExceptionHandler {
+
     @ExceptionHandler(ObjectNotFoundException.class)
     public ResponseEntity<StandardError> objectNotFoundException(ObjectNotFoundException e) {
         StandardError error = new StandardError(System.currentTimeMillis(),
@@ -19,14 +20,14 @@ public class ResourceExceptionHandler {
     }
 
     @ExceptionHandler(DataIntegratyViolationException.class)
-    public ResponseEntity<StandardError> objectNotFoundException(DataIntegratyViolationException e) {
+    public ResponseEntity<StandardError> objectDataIntegratyViolationException(DataIntegratyViolationException e) {
         StandardError error = new StandardError(System.currentTimeMillis(),
                 HttpStatus.BAD_REQUEST.value(), e.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<StandardError> objectNotFoundException(MethodArgumentNotValidException e) {
+    public ResponseEntity<StandardError> objectMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         ValidationError error = new ValidationError(System.currentTimeMillis(),
                 HttpStatus.BAD_REQUEST.value(),"Erro na Validação dos Campos!!" );
 
